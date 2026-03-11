@@ -5,10 +5,19 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const email = body.email;
-    const password = body.password;
-    const name = body.name;
-    const company = body.company;
+    const email = String(body.email ?? "").trim().toLowerCase();
+    const password = String(body.password ?? "");
+    const name = String(body.name ?? "").trim();
+    const company = String(body.company ?? "").trim();
+
+    if (!email || !password || !name || !company) {
+      return NextResponse.json(
+        { error: "Preencha todos os campos obrigatórios." },
+        { status: 400 }
+      );
+    }
+
+    const origin = new URL(req.url).origin;
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -19,8 +28,7 @@ export async function POST(req: Request) {
       email,
       password,
       options: {
-        emailRedirectTo:
-      "https://congenial-waddle-7gvg74r4rw7fp6vw-3000.app.github.dev",
+        emailRedirectTo: `${origin}/login/callback`,
         data: {
           name,
           company,
