@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-const APP_URL = "https://congenial-waddle-7gvg74r4rw7fp6vw-3000.app.github.dev";
-
 export default function LoginPage() {
   const supabase = createClient();
 
@@ -69,7 +67,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${APP_URL}/auth/callback`,
+          redirectTo: `${window.location.origin}/login/callback`,
         },
       });
 
